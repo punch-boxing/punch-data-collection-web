@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Motion Sensor Viewer</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="./index.js"></script>
+  </head>
+  <body>
+    <h1>Motion Sensor Data</h1>
+    <!-- <button id="permissionsButton" onclick="requestPermissions()">
+      Request Permissions
+    </button> -->
+    <button id="startButton" onclick="startTracking()">
+      Start Motion Tracking
+    </button>
+    <button id="stopButton" onclick="stopTracking()" style="display: none">
+      Stop Motion Tracking
+    </button>
+
+    <div class="data-block">
+      <h3>Accelerometer</h3>
+      <p id="accX">x:</p>
+      <p id="accY">y:</p>
+      <p id="accZ">z:</p>
+    </div>
+
+    <div class="data-block">
+      <h3>Gyroscope</h3>
+      <p id="gyroX">x (alpha):</p>
+      <p id="gyroY">y (beta):</p>
+      <p id="gyroZ">z (gamma):</p>
+    </div>
+
+    <script></script>
+  </body>
+</html>
