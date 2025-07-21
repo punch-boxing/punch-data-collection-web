@@ -98,15 +98,20 @@ function stopTracking() {
   document.getElementById("gyroZ").textContent = "z (gamma): 0.00";
 }
 
-// document.getElementById("startButton").addEventListener("click", async () => {
-//   if (granted) {
-//     startTracking();
-//     document.getElementById("startButton").style.display = "none";
-//   } else {
-//     await requestPermissions();
-//     if (granted) {
-//       startTracking();
-//       document.getElementById("startButton").style.display = "none";
-//     }
-//   }
-// });
+document.getElementById("startButton").addEventListener("click", async () => {
+  if (granted) {
+    startTracking();
+    document.getElementById("startButton").style.display = "none";
+  } else {
+    await requestPermissions();
+    if (granted) {
+      startTracking();
+      document.getElementById("startButton").style.display = "none";
+    }
+  }
+});
+
+document.getElementById("stopButton").addEventListener("click", () => {
+  stopTracking();
+  document.getElementById("stopButton").style.display = "none";
+});
