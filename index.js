@@ -49,9 +49,9 @@ async function startTracking() {
     }
     if (event.rotationRate) {
       gyro = new Vector3D(
-        event.rotationRate.alpha / Math.PI || 0,
         event.rotationRate.beta / Math.PI || 0,
-        event.rotationRate.gamma / Math.PI || 0
+        event.rotationRate.gamma / Math.PI || 0,
+        event.rotationRate.alpha / Math.PI || 0
       );
     }
   });
