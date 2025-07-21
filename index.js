@@ -1,9 +1,9 @@
 let granted = false;
 let interval;
 
-const acc = { x: 0, y: 0, z: 0 };
-const gyro = { x: 0, y: 0, z: 0 };
-const ori = { x: 0, y: 0, z: 0 };
+let acc;
+let gyro;
+let ori;
 
 async function requestPermissions() {
   try {
@@ -19,8 +19,6 @@ async function requestPermissions() {
     granted = true;
     return true;
   } catch (err) {
-    // console.error("Permission error:", err);
-    // alert("Failed to get motion/orientation permissions.");
     alert(err.message);
     granted = false;
     return false;
@@ -43,25 +41,25 @@ async function startTracking() {
 
   window.addEventListener("devicemotion", (event) => {
     if (event.accelerationIncludingGravity) {
-      acc.x = event.accelerationIncludingGravity.x / 9.8 || 0;
-      acc.y = event.accelerationIncludingGravity.y / 9.8 || 0;
-      acc.z = event.accelerationIncludingGravity.z / 9.8 || 0;
+      acc = new Vector3D(
+        event.accelerationIncludingGravity.x / 9.8 || 0,
+        event.accelerationIncludingGravity.y / 9.8 || 0,
+        event.accelerationIncludingGravity.z / 9.8 || 0
+      );
     }
     if (event.rotationRate) {
-      gyro.x = event.rotationRate.alpha / Math.PI || 0;
-      gyro.y = event.rotationRate.beta / Math.PI || 0;
-      gyro.z = event.rotationRate.gamma / Math.PI || 0;
+      gyro = new Vector3D(
+        event.rotationRate.alpha / Math.PI || 0,
+        event.rotationRate.beta / Math.PI || 0,
+        event.rotationRate.gamma / Math.PI || 0
+      );
     }
   });
 
   interval = setInterval(() => {
-    console.log("acc:", acc, "gyro:", gyro);
-    ({ acc, ori } = autoCalibrate(
-      new Vector3D(acc.x, acc.y, acc.z),
-      new Vector3D(gyro.x, gyro.y, gyro.z),
-      defaultVector,
-      50
-    ));
+    result = autoCalibrate(acc, gyro, defaultVector, 50);
+    acc = result.acceleration;
+    ori = result.orientation;
 
     document.getElementById("accX").textContent = `x: ${acc.x.toFixed(2)}`;
     document.getElementById("accY").textContent = `y: ${acc.y.toFixed(2)}`;
@@ -98,25 +96,6 @@ function stopTracking() {
   document.getElementById("gyroZ").textContent = "z (gamma): 0.00";
 }
 
-// document.getElementById("startButton").addEventListener("click", async () => {
-//   console.log("Start button clicked");
-//   if (granted) {
-//     startTracking();
-//     document.getElementById("startButton").style.display = "none";
-//   } else {
-//     await requestPermissions();
-//     if (granted) {
-//       startTracking();
-//       document.getElementById("startButton").style.display = "none";
-//     }
-//   }
-// });
-
-// document.getElementById("stopButton").addEventListener("click", () => {
-//   stopTracking();
-//   document.getElementById("stopButton").style.display = "none";
-// });
-
 /**
  * @typedef {number} Number
  */
@@ -147,7 +126,11 @@ class Vector3D {
    * @returns {number}
    */
   magnitude() {
-    return Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
+    const mag = Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
+    if (mag === 0) {
+      return 1;
+    }
+    return mag;
   }
 
   /**
@@ -221,6 +204,7 @@ const integrateGyro = (orientation, gyro, dt) => {
 };
 
 const autoCalibrate = (acceleration, gyro, orientation, dt) => {
+  // console.log("acc:", acceleration, "gyro:", gyro);
   const threshold = 1.1;
   /**
    * @param {Vector3D} acceleration
