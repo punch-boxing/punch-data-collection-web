@@ -29,18 +29,21 @@ async function requestPermissions() {
     granted = true;
     return true;
   } catch (err) {
-    console.error("Permission error:", err);
-    alert("Failed to get motion/orientation permissions.");
+    // console.error("Permission error:", err);
+    // alert("Failed to get motion/orientation permissions.");
     alert(err.message);
     granted = false;
     return false;
   }
 }
 
-function startTracking() {
+async function startTracking() {
   if (!granted) {
-    alert("권한이 필요합니다. 새로고침하여 권한을 요청하세요.");
-    return;
+    await requestPermissions();
+    if (!granted) {
+      alert("Permissions not granted. Cannot start tracking.");
+      return;
+    }
   }
 
   const startButton = document.getElementById("startButton");
