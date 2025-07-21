@@ -51,18 +51,25 @@ async function startTracking() {
   const stopButton = document.getElementById("stopButton");
   stopButton.style.display = "inline-block";
 
+  // window.addEventListener("deviceorientation", (event) => {
+  //   gyro.x = event.alpha || 0;
+  //   gyro.y = event.beta || 0;
+  //   gyro.z = event.gamma || 0;
+  // });
+
   window.addEventListener("devicemotion", (event) => {
     if (event.accelerationIncludingGravity) {
-      acc.x = event.accelerationIncludingGravity.x || 0;
-      acc.y = event.accelerationIncludingGravity.y || 0;
-      acc.z = event.accelerationIncludingGravity.z || 0;
+      acc.x = event.accelerationIncludingGravity.x / 9.8 || 0;
+      acc.y = event.accelerationIncludingGravity.y / 9.8 || 0;
+      acc.z = event.accelerationIncludingGravity.z / 9.8 || 0;
     }
   });
 
-  window.addEventListener("deviceorientation", (event) => {
-    gyro.x = event.alpha || 0;
-    gyro.y = event.beta || 0;
-    gyro.z = event.gamma || 0;
+  let gyroscope = new Gyroscope({ frequency: 50 });
+  gyroscope.addEventListener("reading", () => {
+    gyro.x = gyroscope.x || 0;
+    gyro.y = gyroscope.y || 0;
+    gyro.z = gyroscope.z || 0;
   });
 
   setInterval(() => {
@@ -113,7 +120,3 @@ function stopTracking() {
 //     }
 //   }
 // });
-
-window.onload = async () => {
-  await requestPermissions();
-};
