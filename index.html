@@ -8,11 +8,12 @@
   </head>
   <body>
     <h1>Motion Sensor Data</h1>
-    <!-- <button id="permissionsButton" onclick="requestPermissions()">
-      Request Permissions
-    </button> -->
-    <button id="startButton">Start Motion Tracking</button>
-    <button id="stopButton" style="display: none">Stop Motion Tracking</button>
+    <button id="startButton" onclick="startTracking()">
+      Start Motion Tracking
+    </button>
+    <button id="stopButton" style="display: none" onclick="stopTracking()">
+      Stop Motion Tracking
+    </button>
 
     <div class="data-block">
       <h3>Accelerometer</h3>
