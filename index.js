@@ -42,16 +42,16 @@ async function startTracking() {
   window.addEventListener("devicemotion", (event) => {
     if (event.accelerationIncludingGravity) {
       acc = new Vector3D(
-        event.accelerationIncludingGravity.x / 9.8 || 0,
-        event.accelerationIncludingGravity.y / 9.8 || 0,
-        event.accelerationIncludingGravity.z / 9.8 || 0
+        event.accelerationIncludingGravity.x / 9.8,
+        event.accelerationIncludingGravity.y / 9.8,
+        event.accelerationIncludingGravity.z / 9.8
       );
     }
     if (event.rotationRate) {
       gyro = new Vector3D(
-        event.rotationRate.beta / Math.PI || 0,
-        event.rotationRate.gamma / Math.PI || 0,
-        event.rotationRate.alpha / Math.PI || 0
+        event.rotationRate.beta,
+        event.rotationRate.gamma,
+        event.rotationRate.alpha
       );
     }
   });
