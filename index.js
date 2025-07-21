@@ -49,30 +49,50 @@ async function startTracking() {
     }
     if (event.rotationRate) {
       gyro = new Vector3D(
-        event.rotationRate.beta,
-        event.rotationRate.gamma,
-        event.rotationRate.alpha
+        (event.rotationRate.alpha / 180) * Math.PI,
+        (event.rotationRate.beta / 180) * Math.PI,
+        (event.rotationRate.gamma / 180) * Math.PI
       );
     }
   });
 
   interval = setInterval(() => {
-    result = autoCalibrate(acc, gyro, ori, 50);
-    acc = result.acceleration;
-    ori = result.orientation;
+    if (ori === undefined) {
+      ori = initializeOrientaion(acc);
+    } else {
+      result = autoCalibrate(acc, gyro, ori, 50);
+      acc = result.acceleration;
+      ori = result.orientation;
+    }
 
     document.getElementById("accX").textContent = `x: ${acc.x.toFixed(2)}`;
     document.getElementById("accY").textContent = `y: ${acc.y.toFixed(2)}`;
     document.getElementById("accZ").textContent = `z: ${acc.z.toFixed(2)}`;
-    document.getElementById("gyroX").textContent = `x (alpha): ${Math.sin(
-      ori.x
-    ).toFixed(2)}`;
-    document.getElementById("gyroY").textContent = `y (beta): ${Math.sin(
-      ori.y
-    ).toFixed(2)}`;
-    document.getElementById("gyroZ").textContent = `z (gamma): ${Math.sin(
-      ori.z
-    ).toFixed(2)}`;
+    document.getElementById("oriX").textContent = `x: ${Math.sin(ori.x).toFixed(
+      2
+    )}`;
+    document.getElementById("oriY").textContent = `y: ${Math.sin(ori.y).toFixed(
+      2
+    )}`;
+    document.getElementById("oriZ").textContent = `z: ${Math.sin(ori.z).toFixed(
+      2
+    )}`;
+
+    // const gyroXElem = document.getElementById("gyroX");
+    // const gyroYElem = document.getElementById("gyroY");
+    // const gyroZElem = document.getElementById("gyroZ");
+
+    // gyroXElem.textContent = `x (alpha): ${gyro.x.toFixed(2)}`;
+    // gyroXElem.style.color =
+    //   Math.abs(gyro.x) > 10 && gyro.x > 0 ? "green" : "red";
+
+    // gyroYElem.textContent = `y (beta): ${gyro.y.toFixed(2)}`;
+    // gyroYElem.style.color =
+    //   Math.abs(gyro.y) > 10 && gyro.y > 0 ? "green" : "red";
+
+    // gyroZElem.textContent = `z (gamma): ${gyro.z.toFixed(2)}`;
+    // gyroZElem.style.color =
+    //   Math.abs(gyro.z) > 10 && gyro.z > 0 ? "green" : "red";
   }, 50);
 }
 
@@ -91,9 +111,9 @@ function stopTracking() {
   document.getElementById("accX").textContent = "x: 0.00";
   document.getElementById("accY").textContent = "y: 0.00";
   document.getElementById("accZ").textContent = "z: 0.00";
-  document.getElementById("gyroX").textContent = "x (alpha): 0.00";
-  document.getElementById("gyroY").textContent = "y (beta): 0.00";
-  document.getElementById("gyroZ").textContent = "z (gamma): 0.00";
+  document.getElementById("oriX").textContent = "x: 0.00";
+  document.getElementById("oriY").textContent = "y: 0.00";
+  document.getElementById("oriZ").textContent = "z: 0.00";
 }
 
 /**
@@ -179,6 +199,7 @@ const defaultVector = new Vector3D(0, -1, 0);
  */
 
 const initializeOrientaion = (acceleration) => {
+  /** @type {Vector3D} */
   acceleration = acceleration.normalize();
   return new Vector3D(
     -Math.PI - Math.atan2(acceleration.z, acceleration.y),
@@ -198,7 +219,7 @@ const calculateGravity = (orientaion) => {
 const integrateGyro = (orientation, gyro, dt) => {
   return new Vector3D(
     orientation.x + (gyro.x * dt) / 1000,
-    0,
+    orientation.y + (gyro.y * dt) / 1000,
     orientation.z + (gyro.z * dt) / 1000
   );
 };
@@ -214,6 +235,12 @@ const autoCalibrate = (acceleration, gyro, orientation, dt) => {
    * @returns {CalibrationResult}
    */
   // cosine similarity should be more than 0.5(which means 60 degrees) since the error value magnifies as the angle converges to 90 degrees(x axis)
+  document.getElementById(
+    "Cosine Similarity"
+  ).textContent = `Cosine Similarity: ${acceleration
+    .cosineSimilarity(defaultVector)
+    .toFixed(2)}`;
+
   if (
     acceleration.magnitude() < threshold &&
     acceleration.cosineSimilarity(defaultVector) > 0.5
@@ -221,7 +248,7 @@ const autoCalibrate = (acceleration, gyro, orientation, dt) => {
     let _acceleration = acceleration.normalize();
     orientation = new Vector3D(
       -Math.PI - Math.atan2(_acceleration.z, _acceleration.y),
-      0,
+      orientation.y + (gyro.y * dt) / 1000,
       -Math.asin(_acceleration.x)
     );
   } else {

@@ -1,5 +1,5 @@
 body {
-  font-family: "Helvetica Neue", sans-serif;
+  font-family: "SUIT Variable", sans-serif;
   text-align: center;
   padding: 40px 20px;
   background: #0d1117;
@@ -8,6 +8,10 @@ body {
 
 h1 {
   margin-bottom: 24px;
+}
+
+h3 {
+  margin: 0;
 }
 
 button {

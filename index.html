@@ -2,12 +2,16 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Motion Sensor Viewer</title>
+    <link
+      href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/variable/woff2/SUIT-Variable.css"
+      rel="stylesheet"
+    />
+    <title>PUNCH!&trade; Data Collector</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="./index.js"></script>
   </head>
   <body>
-    <h1>Motion Sensor Data</h1>
+    <h1>PUNCH!&trade; <br />Data Collector</h1>
     <button id="startButton" onclick="startTracking()">
       Start Motion Tracking
     </button>
@@ -22,11 +26,23 @@
       <p id="accZ">z:</p>
     </div>
 
-    <div class="data-block">
+    <!-- <div class="data-block">
       <h3>Gyroscope</h3>
       <p id="gyroX">x (alpha):</p>
       <p id="gyroY">y (beta):</p>
       <p id="gyroZ">z (gamma):</p>
+    </div> -->
+
+    <div class="data-block">
+      <h3>Orientation</h3>
+      <p id="oriX">x:</p>
+      <p id="oriY">y:</p>
+      <p id="oriZ">z:</p>
+    </div>
+
+    <div class="data-block">
+      <h3>ETC</h3>
+      <p id="Cosine Similarity">Cosine Similarity:</p>
     </div>
 
     <script></script>
