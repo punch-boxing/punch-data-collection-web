@@ -57,7 +57,7 @@ async function startTracking() {
   });
 
   interval = setInterval(() => {
-    result = autoCalibrate(acc, gyro, defaultVector, 50);
+    result = autoCalibrate(acc, gyro, ori, 50);
     acc = result.acceleration;
     ori = result.orientation;
 
