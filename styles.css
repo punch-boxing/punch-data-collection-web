@@ -1,7 +1,16 @@
+* {
+  zoom: initial !important;
+  transform: none !important;
+  overscroll-behavior: none;
+  touch-action: none;
+  overflow: hidden;
+  user-select: none;
+}
+
 body {
   font-family: "SUIT Variable", sans-serif;
   text-align: center;
-  padding: 40px 20px;
+  padding: 0px 20px;
   background: #0d1117;
   color: #f0f6fc;
 }
@@ -16,7 +25,7 @@ h3 {
 
 button {
   padding: 12px 24px;
-  background-color: #238636;
+  background-color: #ff4040;
   color: white;
   border: none;
   border-radius: 8px;
@@ -24,10 +33,22 @@ button {
   cursor: pointer;
   margin-bottom: 24px;
   transition: background-color 0.3s;
+  width: 100%;
+}
+
+#punch {
+  height: calc(100vw - 48px);
+  border-radius: 99999px;
+  font-size: x-large;
+  width: 100%;
+}
+
+.option {
+  margin: 0px;
 }
 
 button:hover {
-  background-color: #2ea043;
+  background-color: #ff4040;
 }
 
 .data-block {

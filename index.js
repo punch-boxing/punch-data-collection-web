@@ -1,9 +1,21 @@
+const columns =
+  "Index,Time,Raw Acceleration X,Raw Acceleration Y,Raw Acceleration Z,Acceleration X,Acceleration Y,Acceleration Z,Angular Velocity X,Angular Velocity Y,Angular Velocity Z,Orientation X,Orientation Y,Orientation Z,Punch Type\n";
+const punchTypes = ["Straight", "Hook", "Uppercut", "Body"];
+
 let granted = false;
 let interval;
 
 let acc;
 let gyro;
 let ori;
+
+let punch;
+let punchIndex = 0;
+let volume;
+
+let index = 0;
+let initialTime;
+let data;
 
 async function requestPermissions() {
   try {
@@ -34,6 +46,15 @@ async function startTracking() {
     }
   }
 
+  // initialize variables
+  data = columns;
+  index = 0;
+  acc = undefined;
+  gyro = undefined;
+  ori = undefined;
+  punch = "None";
+  initialTime = Date.now();
+
   const startButton = document.getElementById("startButton");
   startButton.style.display = "none";
   const stopButton = document.getElementById("stopButton");
@@ -59,41 +80,54 @@ async function startTracking() {
   interval = setInterval(() => {
     if (ori === undefined) {
       ori = initializeOrientaion(acc);
-    } else {
-      result = autoCalibrate(acc, gyro, ori, 50);
-      acc = result.acceleration;
-      ori = result.orientation;
+    }
+    let rawAcc = acc;
+    result = autoCalibrate(acc, gyro, ori, 50);
+    acc = result.acceleration;
+    ori = result.orientation;
+
+    // document.getElementById("accX").textContent = `x: ${acc.x.toFixed(2)}`;
+    // document.getElementById("accY").textContent = `y: ${acc.y.toFixed(2)}`;
+    // document.getElementById("accZ").textContent = `z: ${acc.z.toFixed(2)}`;
+    // document.getElementById("oriX").textContent = `x: ${Math.sin(ori.x).toFixed(
+    //   2
+    // )}`;
+    // document.getElementById("oriY").textContent = `y: ${Math.sin(ori.y).toFixed(
+    //   2
+    // )}`;
+    // document.getElementById("oriZ").textContent = `z: ${Math.sin(ori.z).toFixed(
+    //   2
+    // )}`;
+    // data.current += `${index},${elapsedTime},${x},${y},${z},${acceleration.current.x},${acceleration.current.y},${acceleration.current.z},${_gyro.x},${_gyro.y},${_gyro.z},${Math.sin(orientation.current.x)},${Math.sin(orientation.current.y)},${Math.sin(orientation.current.z)},${punch}\n`;
+    data += `${index},${Date.now() - initialTime},${rawAcc.x.toFixed(
+      2
+    )},${rawAcc.y.toFixed(2)},${rawAcc.z.toFixed(2)},${acc.x.toFixed(
+      2
+    )},${acc.y.toFixed(2)},${acc.z.toFixed(2)},${gyro.x.toFixed(
+      2
+    )},${gyro.y.toFixed(2)},${gyro.z.toFixed(2)},${Math.sin(ori.x).toFixed(
+      2
+    )},${Math.sin(ori.y).toFixed(2)},${Math.sin(ori.z).toFixed(2)},${punch}\n`;
+
+    if (punch !== "None") {
+      punch = "None";
+      // document.getElementById("Punch").textContent = `Punch: ${punch}`;
     }
 
-    document.getElementById("accX").textContent = `x: ${acc.x.toFixed(2)}`;
-    document.getElementById("accY").textContent = `y: ${acc.y.toFixed(2)}`;
-    document.getElementById("accZ").textContent = `z: ${acc.z.toFixed(2)}`;
-    document.getElementById("oriX").textContent = `x: ${Math.sin(ori.x).toFixed(
-      2
-    )}`;
-    document.getElementById("oriY").textContent = `y: ${Math.sin(ori.y).toFixed(
-      2
-    )}`;
-    document.getElementById("oriZ").textContent = `z: ${Math.sin(ori.z).toFixed(
-      2
-    )}`;
-
-    // const gyroXElem = document.getElementById("gyroX");
-    // const gyroYElem = document.getElementById("gyroY");
-    // const gyroZElem = document.getElementById("gyroZ");
-
-    // gyroXElem.textContent = `x (alpha): ${gyro.x.toFixed(2)}`;
-    // gyroXElem.style.color =
-    //   Math.abs(gyro.x) > 10 && gyro.x > 0 ? "green" : "red";
-
-    // gyroYElem.textContent = `y (beta): ${gyro.y.toFixed(2)}`;
-    // gyroYElem.style.color =
-    //   Math.abs(gyro.y) > 10 && gyro.y > 0 ? "green" : "red";
-
-    // gyroZElem.textContent = `z (gamma): ${gyro.z.toFixed(2)}`;
-    // gyroZElem.style.color =
-    //   Math.abs(gyro.z) > 10 && gyro.z > 0 ? "green" : "red";
+    index++;
   }, 50);
+}
+
+function setPunch() {
+  if (acc !== undefined && gyro !== undefined && ori !== undefined) {
+    punch = punchTypes[punchIndex];
+    // document.getElementById("Punch").textContent = `Punch: ${punch}`;
+  }
+}
+
+function changePunch() {
+  punchIndex = (punchIndex + 1) % punchTypes.length;
+  document.getElementById("punch").textContent = punchTypes[punchIndex];
 }
 
 function stopTracking() {
@@ -104,16 +138,11 @@ function stopTracking() {
 
   window.removeEventListener("devicemotion", () => {});
   clearInterval(interval);
+}
 
-  acc.x = acc.y = acc.z = 0;
-  gyro.x = gyro.y = gyro.z = 0;
-
-  document.getElementById("accX").textContent = "x: 0.00";
-  document.getElementById("accY").textContent = "y: 0.00";
-  document.getElementById("accZ").textContent = "z: 0.00";
-  document.getElementById("oriX").textContent = "x: 0.00";
-  document.getElementById("oriY").textContent = "y: 0.00";
-  document.getElementById("oriZ").textContent = "z: 0.00";
+function watchData() {
+  const dataContainer = document.getElementById("dataContainer");
+  dataContainer.style.display = "absolute";
 }
 
 /**
@@ -235,11 +264,11 @@ const autoCalibrate = (acceleration, gyro, orientation, dt) => {
    * @returns {CalibrationResult}
    */
   // cosine similarity should be more than 0.5(which means 60 degrees) since the error value magnifies as the angle converges to 90 degrees(x axis)
-  document.getElementById(
-    "Cosine Similarity"
-  ).textContent = `Cosine Similarity: ${acceleration
-    .cosineSimilarity(defaultVector)
-    .toFixed(2)}`;
+  // document.getElementById(
+  //   "Cosine Similarity"
+  // ).textContent = `Cosine Similarity: ${acceleration
+  //   .cosineSimilarity(defaultVector)
+  //   .toFixed(2)}`;
 
   if (
     acceleration.magnitude() < threshold &&
@@ -259,4 +288,8 @@ const autoCalibrate = (acceleration, gyro, orientation, dt) => {
     acceleration: acceleration.subtract(calculateGravity(orientation)),
     orientation: orientation,
   };
+};
+
+window.onload = async () => {
+  document.getElementById("punch").textContent = punchTypes[punchIndex];
 };

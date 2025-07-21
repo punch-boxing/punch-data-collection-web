@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta charset="UTF-8" />
     <link
       href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/variable/woff2/SUIT-Variable.css"
       rel="stylesheet"
@@ -12,39 +16,71 @@
   </head>
   <body>
     <h1>PUNCH!&trade; <br />Data Collector</h1>
-    <button id="startButton" onclick="startTracking()">
-      Start Motion Tracking
-    </button>
-    <button id="stopButton" style="display: none" onclick="stopTracking()">
-      Stop Motion Tracking
-    </button>
+    <button id="punch" onclick="setPunch()"></button>
+    <table style="width: 100%; border-spacing: 8px">
+      <tr>
+        <td width="50%">
+          <button class="option" id="startButton" onclick="startTracking()">
+            인식 시작
+          </button>
+          <button
+            class="option"
+            id="stopButton"
+            style="display: none"
+            onclick="stopTracking()"
+          >
+            인식 정지
+          </button>
+        </td>
 
-    <div class="data-block">
-      <h3>Accelerometer</h3>
-      <p id="accX">x:</p>
-      <p id="accY">y:</p>
-      <p id="accZ">z:</p>
+        <td>
+          <button class="option" id="changePunchButton" onclick="changePunch()">
+            주먹 변경
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button class="option" id="watchDataButton" onclick="watchData()">
+            정보 보기
+          </button>
+        </td>
+
+        <td>
+          <button class="option" id="sendDataButton" onclick="sendData()">
+            데이터 기여
+          </button>
+        </td>
+      </tr>
+    </table>
+
+    <div id="dataContainer" style="display: none">
+      <div class="data-block">
+        <h3>Accelerometer</h3>
+        <p id="accX">x:</p>
+        <p id="accY">y:</p>
+        <p id="accZ">z:</p>
+      </div>
+
+      <div class="data-block">
+        <h3>Gyroscope</h3>
+        <p id="gyroX">x:</p>
+        <p id="gyroY">y:</p>
+        <p id="gyroZ">z:</p>
+      </div>
+
+      <div class="data-block">
+        <h3>Orientation</h3>
+        <p id="oriX">x:</p>
+        <p id="oriY">y:</p>
+        <p id="oriZ">z:</p>
+      </div>
+
+      <div class="data-block">
+        <h3>ETC</h3>
+        <p id="Cosine Similarity">Cosine Similarity:</p>
+        <p id="Punch">Punch:</p>
+      </div>
     </div>
-
-    <!-- <div class="data-block">
-      <h3>Gyroscope</h3>
-      <p id="gyroX">x (alpha):</p>
-      <p id="gyroY">y (beta):</p>
-      <p id="gyroZ">z (gamma):</p>
-    </div> -->
-
-    <div class="data-block">
-      <h3>Orientation</h3>
-      <p id="oriX">x:</p>
-      <p id="oriY">y:</p>
-      <p id="oriZ">z:</p>
-    </div>
-
-    <div class="data-block">
-      <h3>ETC</h3>
-      <p id="Cosine Similarity">Cosine Similarity:</p>
-    </div>
-
-    <script></script>
   </body>
 </html>
