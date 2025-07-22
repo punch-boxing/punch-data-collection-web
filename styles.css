@@ -43,6 +43,14 @@ button {
   width: 100%;
 }
 
+#dataContainer {
+  /* padding: 12px 24px; */
+  margin-bottom: 24px;
+  height: calc(100vw - 48px);
+  overflow-y: auto;
+  width: 100%;
+}
+
 .option {
   margin: 0px;
 }

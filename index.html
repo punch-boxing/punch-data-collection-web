@@ -17,42 +17,6 @@
   <body>
     <h1>PUNCH!&trade; <br />Data Collector</h1>
     <button id="punch" onclick="setPunch()"></button>
-    <table style="width: 100%; border-spacing: 8px">
-      <tr>
-        <td width="50%">
-          <button class="option" id="startButton" onclick="startTracking()">
-            인식 시작
-          </button>
-          <button
-            class="option"
-            id="stopButton"
-            style="display: none"
-            onclick="stopTracking()"
-          >
-            인식 정지
-          </button>
-        </td>
-
-        <td>
-          <button class="option" id="changePunchButton" onclick="changePunch()">
-            주먹 변경
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <button class="option" id="watchDataButton" onclick="watchData()">
-            정보 보기
-          </button>
-        </td>
-
-        <td>
-          <button class="option" id="sendDataButton" onclick="sendData()">
-            데이터 기여
-          </button>
-        </td>
-      </tr>
-    </table>
 
     <div id="dataContainer" style="display: none">
       <div class="data-block">
@@ -78,9 +42,49 @@
 
       <div class="data-block">
         <h3>ETC</h3>
-        <p id="Cosine Similarity">Cosine Similarity:</p>
-        <p id="Punch">Punch:</p>
+        <p id="cosineSimilarity">Cosine Similarity:</p>
+        <p id="punchType">Punch Type:</p>
       </div>
     </div>
+    <table style="width: 100%; border-spacing: 8px">
+      <tr>
+        <td width="50%">
+          <button class="option" id="startButton" onclick="startTracking()">
+            인식 시작
+          </button>
+          <button
+            class="option"
+            id="stopButton"
+            style="display: none"
+            onclick="stopTracking()"
+          >
+            인식 정지
+          </button>
+        </td>
+
+        <td>
+          <button class="option" id="changePunchButton" onclick="changePunch()">
+            주먹 변경
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button
+            class="option"
+            id="watchDataButton"
+            onclick="setDataContainerVisibility()"
+          >
+            정보 보기
+          </button>
+        </td>
+
+        <td>
+          <button class="option" id="sendDataButton" onclick="sendData()">
+            데이터 기여
+          </button>
+        </td>
+      </tr>
+    </table>
   </body>
 </html>

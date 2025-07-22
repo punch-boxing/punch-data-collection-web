@@ -59,6 +59,9 @@ async function startTracking() {
   startButton.style.display = "none";
   const stopButton = document.getElementById("stopButton");
   stopButton.style.display = "inline-block";
+  document.getElementById(
+    "punchType"
+  ).textContent = `Punch: ${punchTypes[punchIndex]}`;
 
   window.addEventListener("devicemotion", (event) => {
     if (event.accelerationIncludingGravity) {
@@ -86,19 +89,22 @@ async function startTracking() {
     acc = result.acceleration;
     ori = result.orientation;
 
-    // document.getElementById("accX").textContent = `x: ${acc.x.toFixed(2)}`;
-    // document.getElementById("accY").textContent = `y: ${acc.y.toFixed(2)}`;
-    // document.getElementById("accZ").textContent = `z: ${acc.z.toFixed(2)}`;
-    // document.getElementById("oriX").textContent = `x: ${Math.sin(ori.x).toFixed(
-    //   2
-    // )}`;
-    // document.getElementById("oriY").textContent = `y: ${Math.sin(ori.y).toFixed(
-    //   2
-    // )}`;
-    // document.getElementById("oriZ").textContent = `z: ${Math.sin(ori.z).toFixed(
-    //   2
-    // )}`;
-    // data.current += `${index},${elapsedTime},${x},${y},${z},${acceleration.current.x},${acceleration.current.y},${acceleration.current.z},${_gyro.x},${_gyro.y},${_gyro.z},${Math.sin(orientation.current.x)},${Math.sin(orientation.current.y)},${Math.sin(orientation.current.z)},${punch}\n`;
+    document.getElementById("accX").textContent = `x: ${acc.x.toFixed(2)}`;
+    document.getElementById("accY").textContent = `y: ${acc.y.toFixed(2)}`;
+    document.getElementById("accZ").textContent = `z: ${acc.z.toFixed(2)}`;
+    document.getElementById("oriX").textContent = `x: ${Math.sin(ori.x).toFixed(
+      2
+    )}`;
+    document.getElementById("oriY").textContent = `y: ${Math.sin(ori.y).toFixed(
+      2
+    )}`;
+    document.getElementById("oriZ").textContent = `z: ${Math.sin(ori.z).toFixed(
+      2
+    )}`;
+    document.getElementById("gyroX").textContent = `x: ${gyro.x.toFixed(2)}`;
+    document.getElementById("gyroY").textContent = `y: ${gyro.y.toFixed(2)}`;
+    document.getElementById("gyroZ").textContent = `z: ${gyro.z.toFixed(2)}`;
+
     data += `${index},${Date.now() - initialTime},${rawAcc.x.toFixed(
       2
     )},${rawAcc.y.toFixed(2)},${rawAcc.z.toFixed(2)},${acc.x.toFixed(
@@ -121,13 +127,15 @@ async function startTracking() {
 function setPunch() {
   if (acc !== undefined && gyro !== undefined && ori !== undefined) {
     punch = punchTypes[punchIndex];
-    // document.getElementById("Punch").textContent = `Punch: ${punch}`;
   }
 }
 
 function changePunch() {
   punchIndex = (punchIndex + 1) % punchTypes.length;
   document.getElementById("punch").textContent = punchTypes[punchIndex];
+  document.getElementById(
+    "punchType"
+  ).textContent = `Punch: ${punchTypes[punchIndex]}`;
 }
 
 function stopTracking() {
@@ -140,9 +148,59 @@ function stopTracking() {
   clearInterval(interval);
 }
 
-function watchData() {
+function setDataContainerVisibility() {
+  const punchButton = document.getElementById("punch");
   const dataContainer = document.getElementById("dataContainer");
-  dataContainer.style.display = "absolute";
+  if (dataContainer.style.display === "block") {
+    punchButton.style.display = "inline-block";
+    dataContainer.style.display = "none";
+    document.getElementById("watchDataButton").textContent = "정보 보기";
+  } else {
+    punchButton.style.display = "none";
+    dataContainer.style.display = "block";
+    document.getElementById("watchDataButton").textContent = "정보 닫기";
+  }
+}
+
+function sendData() {
+  const url = "https://punch-data-collection.hayward2007.workers.dev";
+  const headers = {
+    "Content-Type": "text/csv",
+  };
+  const options = {
+    method: "POST",
+    headers: headers,
+    body: data,
+  };
+
+  if (data === columns) {
+    alert("No data to send.");
+    return;
+  }
+
+  fetch(url, options)
+    .then((response) => {
+      if (response.ok) {
+        alert("Data sent successfully!");
+      } else {
+        alert("Failed to send data. Status: " + response.status);
+      }
+    })
+    .catch((error) => {
+      alert("Error sending data: " + error.message);
+    });
+
+  // const file = document.getElementById('fileInput').files[0];
+  //   const formData = new FormData();
+  //   formData.append('file', file);
+
+  //   const res = await fetch('https://csv-uploader.<yourname>.workers.dev', {
+  //     method: 'POST',
+  //     body: formData,
+  //   });
+
+  //   const result = await res.text();
+  //   document.getElementById('output').textContent = result;
 }
 
 /**
@@ -264,11 +322,11 @@ const autoCalibrate = (acceleration, gyro, orientation, dt) => {
    * @returns {CalibrationResult}
    */
   // cosine similarity should be more than 0.5(which means 60 degrees) since the error value magnifies as the angle converges to 90 degrees(x axis)
-  // document.getElementById(
-  //   "Cosine Similarity"
-  // ).textContent = `Cosine Similarity: ${acceleration
-  //   .cosineSimilarity(defaultVector)
-  //   .toFixed(2)}`;
+  document.getElementById(
+    "cosineSimilarity"
+  ).textContent = `Cosine Similarity: ${acceleration
+    .cosineSimilarity(defaultVector)
+    .toFixed(2)}`;
 
   if (
     acceleration.magnitude() < threshold &&
