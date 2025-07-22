@@ -105,15 +105,11 @@ async function startTracking() {
     document.getElementById("gyroY").textContent = `y: ${gyro.y.toFixed(2)}`;
     document.getElementById("gyroZ").textContent = `z: ${gyro.z.toFixed(2)}`;
 
-    data += `${index},${Date.now() - initialTime},${rawAcc.x.toFixed(
-      2
-    )},${rawAcc.y.toFixed(2)},${rawAcc.z.toFixed(2)},${acc.x.toFixed(
-      2
-    )},${acc.y.toFixed(2)},${acc.z.toFixed(2)},${gyro.x.toFixed(
-      2
-    )},${gyro.y.toFixed(2)},${gyro.z.toFixed(2)},${Math.sin(ori.x).toFixed(
-      2
-    )},${Math.sin(ori.y).toFixed(2)},${Math.sin(ori.z).toFixed(2)},${punch}\n`;
+    data += `${index},${Date.now() - initialTime},${rawAcc.x},${rawAcc.y},${
+      rawAcc.z
+    },${acc.x},${acc.y},${acc.z},${gyro.x},${gyro.y},${gyro.z},${Math.sin(
+      ori.x
+    )},${Math.sin(ori.y)},${Math.sin(ori.z)},${punch}\n`;
 
     if (punch !== "None") {
       punch = "None";
