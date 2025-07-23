@@ -185,18 +185,6 @@ function sendData() {
     .catch((error) => {
       alert("Error sending data: " + error.message);
     });
-
-  // const file = document.getElementById('fileInput').files[0];
-  //   const formData = new FormData();
-  //   formData.append('file', file);
-
-  //   const res = await fetch('https://csv-uploader.<yourname>.workers.dev', {
-  //     method: 'POST',
-  //     body: formData,
-  //   });
-
-  //   const result = await res.text();
-  //   document.getElementById('output').textContent = result;
 }
 
 /**
